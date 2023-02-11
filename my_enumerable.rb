@@ -1,88 +1,60 @@
 module MyEnumerable
- 
-	def all? (&block)
+  def all?(&block)
+    if block_given?
 
-		if block_given?
-			
-			each {|a| 
-				if block.call(a) == false
-				return false
-				end
-				
+      each do |a|
+        return false if block.call(a) == false
+      end
 
-			} 
+    else
+      each do |obj|
+        return false unless obj
+      end
 
-			true
+    end
+    true
+  end
 
-	else
-		each { |obj| 
-			
-			if !obj
-				return false
-			end
-			}
-			return true
+  def any?(&block)
+    if block_given?
 
-	end
+      each do |a|
+        return true if block.call(a) == true
 
-	end
+        next
+      end
 
-	def any?(&block)
+    else
+      each do |obj|
+        return true if obj
 
-		if block_given?
-			
-			each {|a| 
-				if block.call(a) == true
-					return true
-				else
-					next
-				end
+        next
+      end
 
+    end
+    false
+  end
 
-			} 
+  def filter(&block)
+    if block_given?
+      ans = []
 
-			false
+      each do |obj|
+        next unless block.call(obj)
 
-	else
-		each { |obj| 
-			
-			if obj
-				return true
-			else
-				next
-			end
-			}
-			return false
+        ans.append(obj)
+      end
 
-	end
-		
-	end
+      ans
 
-	def filter(&block)
+    else
+      each
+    end
+  end
 
-		if block_given?
-			ans = []
-
-			each {|obj|
-				if block.call(obj)
-					ans.append(obj)
-				else
-					next
-				end
-			}
-
-			ans
-
-		else
-			each 
-		end
-	end
-
-
-	def reverse_em
-		a = []
-		each {|e| a.prepend(e)}
-		a
-	end
-
+  def reverse_em
+    a = []
+    each { |e| a.prepend(e) }
+    a
+  end
 end
